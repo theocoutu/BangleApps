@@ -307,25 +307,12 @@
 
     drawWaiting();
 
-    console.log("now trying findDevices");
-    NRF.findDevices(function(devices) {
-      console.log(devices);
-    }, {
-      timeout : 5000, 
-      active : true,
-      filters : [
-        {namePrefix: DEVICE_NAME_PREFIX },
-        {name: 'HLK-2451_7505'}
-      ] 
-    });
-
+    console.log("now trying requestDevice");
     NRF.requestDevice({
       timeout: 5000,
       active: true,
       filters: [
         {namePrefix: DEVICE_NAME_PREFIX },
-        //{namePrefix: 'HLK'},
-        //{namePrefix: 'HLK-2451'},
         {name: 'HLK-2451_7505'} //,
         //{services: ['0000fff0-0000-1000-8000-00805f9b34fb']}
       ]
@@ -345,12 +332,14 @@
       console.log("Got characteristic");
       characteristic = c;
       characteristic.on("characteristicvaluechanged", function(event) {
-        const buf = event.target.value.buffer;
+        //const buf = event.target.value.buffer;
         // Convert to array
-        const arr = [];
-        for (let i = 0; i < buf.byteLength; i++) {
-          arr.push(buf.getUint8(i));
-        }
+        //const arr = [];
+        //for (let i = 0; i < buf.byteLength; i++) {
+        //  arr.push(buf.getUint8(i));
+        //}
+        const arr = new Uint8Array(event.target.value.buffer);
+        
         parseMessage(arr);
       });
       return characteristic.startNotifications();
