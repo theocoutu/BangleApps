@@ -312,7 +312,7 @@
       console.log(devices);
     }, {
       timeout : 5000, 
-      //active : true,
+      active : true,
       filters : [
         {namePrefix: DEVICE_NAME_PREFIX },
         //{namePrefix: 'HLK'},
@@ -328,17 +328,16 @@
     console.log("now trying requestDevice");
 
     NRF.requestDevice({
-      timeout: 10000,
-      active: true,
+      timeout: 5000,
+      //active: true,
       filters: [
-        //{namePrefix: DEVICE_NAME_PREFIX},
+        {namePrefix: DEVICE_NAME_PREFIX },
         //{namePrefix: 'HLK'},
         //{namePrefix: 'HLK-2451'},
-        //{name: 'HLK-2451_7505'},
+        {name: 'HLK-2451_7505'},
         //{services: ["0000fff1-0000-1000-8000-00805f9b34fb"]}, // the characteristic
         //{services: ["0000fff0-0000-1000-8000-00805f9b34fb"]},
-        {services: ['0000fff0-0000-1000-8000-00805f9b34fb']} //,
-        //{serviceData: {SERVICE_UUID:{}}}
+        {services: ['0000fff0-0000-1000-8000-00805f9b34fb']}
       ]
     }).then(function(device) {
       scanning = false;
