@@ -5,8 +5,8 @@
   // --- Configuration ---
   const SERVICE_UUID = "fff0";          // 0xFFF0
   const CHAR_UUID = "fff1";             // 0xFFF1
-  const DEVICE_NAME_PREFIX = "HLK-LD2451";  // Adjust if your module advertises differently
-
+  const DEVICE_NAME_PREFIX = "HLK-LD2451";  //  module advertises like this
+  
   const FRAME_HEADER = [0xF4, 0xF3, 0xF2, 0xF1];
   const FRAME_TAIL = [0xF8, 0xF7, 0xF6, 0xF5];
 
@@ -47,9 +47,9 @@
     clearScreen();
     g.setFont("6x8", 2);
     g.setFontAlign(0, 0);
-    g.drawString("RearVue", SCREEN_W / 2, SCREEN_H / 2 - 20, true);
+    g.drawString("RearVue", SCREEN_W / 2 - 20, SCREEN_H / 2 - 20, true);
     g.setFont("6x8", 1);
-    g.drawString("Scanning for LD2451...", SCREEN_W / 2, SCREEN_H / 2 + 10, true);
+    g.drawString("Scanning for HLK-LD2451...", SCREEN_W / 2 - 20, SCREEN_H / 2 + 10, true);
   }
 
   function drawNoTargets() {
@@ -57,9 +57,9 @@
     clearScreen();
     g.setFont("6x8", 2);
     g.setFontAlign(0, 0);
-    g.drawString("RearVue", SCREEN_W / 2, SCREEN_H / 2 - 20, true);
+    g.drawString("RearVue", SCREEN_W / 2 - 20, SCREEN_H / 2 - 20, true);
     g.setFont("6x8", 1);
-    g.drawString("No targets", SCREEN_W / 2, SCREEN_H / 2 + 10, true);
+    g.drawString("No targets", SCREEN_W / 2 - 20, SCREEN_H / 2 + 10, true);
   }
 
   function drawTargets(parsed) {
@@ -68,10 +68,10 @@
 
     g.setFont("6x8", 2);
     g.setFontAlign(0, 0);
-    g.drawString("RearVue", SCREEN_W / 2, 20, true);
+    g.drawString("RearVue", SCREEN_W / 2 - 20, 20, true);
 
     g.setFont("6x8", 1);
-    g.drawString(`Targets: ${parsed.target_count}`, SCREEN_W / 2, 40, true);
+    g.drawString(`Targets: ${parsed.target_count}`, SCREEN_W / 2 - 20, 40, true);
 
     // Draw each target
     for (let i = 0; i < parsed.targets.length; i++) {
@@ -130,7 +130,7 @@
     g.drawString(label2, x1, textY + 10, false);
   }
 
-  // --- Frame parsing (same logic as your Python) ---
+  // --- Frame parsing (same logic as Python) ---
   function extractFrames(buffer) {
     const frames = [];
     let i = 0;
@@ -153,7 +153,10 @@
       if (start < 0) break;
 
       // Check minimum length
-      if (buffer.length - start < 10) break;
+      if (buffer.length - start < 10) {
+        console.log("(buf len - start) < 10");
+        break;
+      }
 
       // Length: 2 bytes little-endian at start+4, start+5
       const length = buffer[start + 4] + (buffer[start + 5] << 8);
@@ -193,22 +196,34 @@
   }
 
   function parseFrame(frame) {
-    if (frame.length < 10) return null;
+    if (frame.length < 10) {
+      console.log("frame len < 10");
+      return null;
+    }
 
     // Header
     for (let i = 0; i < 4; i++) {
-      if (frame[i] !== FRAME_HEADER[i]) return null;
+      if (frame[i] !== FRAME_HEADER[i]) {
+        console.log("frame header mismatch");
+        return null;
+      }
     }
     // Tail
     for (let i = 0; i < 4; i++) {
-      if (frame[frame.length - 4 + i] !== FRAME_TAIL[i]) return null;
+      if (frame[frame.length - 4 + i] !== FRAME_TAIL[i]) {
+        console.log("frame tail mismatch");
+        return null;
+      }
     }
 
     const length = frame[4] + (frame[5] << 8);
-    if (length !== frame.length - 10) return null;
+    if (length !== frame.length - 10) {
+      console.log("frame length mismatch");
+      return null;
+    }
 
     if (length < 2) {
-      // No payload
+      console.log(" No payload ");
       return {
         length: 0,
         target_count: 0,
@@ -262,7 +277,7 @@
     for (const frame of frames) {
       const parsed = parseFrame(frame);
       if (parsed) {
-        // console.log("Parsed:", parsed);
+        console.log("Parsed:", parsed);
         latestParsed = parsed;
         lastTargetTime = Date.now();
 
@@ -291,6 +306,8 @@
     scanning = true;
 
     drawWaiting();
+
+    console.log("now trying requestDevice");
 
     NRF.requestDevice({
       timeout: 10000,
