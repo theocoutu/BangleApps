@@ -1,14 +1,15 @@
 { "id": "tcrearvue",
-  "name": "TC RearVue",
-  "shortName": "RearVue",
+  "name": "TC Rearvue",
+  "shortName": "Rearvue",
   "icon": "app.png",
-  "description": "DIY Varia/RearVue rear sensor display for HLK-LD2451 BLE",
-  "tags": "",
+  "description": "DIY rear sensor display for HLK-LD2451 BLE",
+  "tags": "tool",
   "author": "theocoutu",
   "supports": ["BANGLEJS2"],
   "version": "0.01",
+  "allow_emulator": false,
   "storage": [
     {"name":"tcrearvue.app.js","url":"app.js"},
     {"name":"tcrearvue.img","url":"app-icon.js","evaluate":true}
-  ],
-},
+  ]
+}
