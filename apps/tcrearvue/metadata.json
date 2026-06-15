@@ -6,7 +6,7 @@
   "tags": "tool",
   "author": "theocoutu",
   "supports": ["BANGLEJS2"],
-  "version": "0.09",
+  "version": "0.010",
   "allow_emulator": false,
   "storage": [
     {"name":"tcrearvue.app.js","url":"app.js"},
