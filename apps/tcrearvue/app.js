@@ -319,7 +319,7 @@
         {services: ["0000fff1-0000-1000-8000-00805f9b34fb"]}, // the characteristic
         {services: ["0000fff0-0000-1000-8000-00805f9b34fb"]},
         {serviceData: {SERVICE_UUID:{}}}
-      }]
+      ]
     }).then(function(device) {
       scanning = false;
       console.log("Found device:", device.name);
