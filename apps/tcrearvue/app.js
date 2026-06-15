@@ -5,7 +5,7 @@
   // --- Configuration ---
   const SERVICE_UUID = "fff0";          // 0xFFF0
   const CHAR_UUID = "fff1";             // 0xFFF1
-  const DEVICE_NAME_PREFIX = "HLK-LD2451";  //  module advertises like this
+  const DEVICE_NAME_PREFIX = "HLK";  //  module advertises like this
   
   const FRAME_HEADER = [0xF4, 0xF3, 0xF2, 0xF1];
   const FRAME_TAIL = [0xF8, 0xF7, 0xF6, 0xF5];
@@ -311,7 +311,12 @@
 
     NRF.requestDevice({
       timeout: 10000,
-      filters: [{ namePrefix: DEVICE_NAME_PREFIX }]
+      filters: [{
+        //namePrefix: DEVICE_NAME_PREFIX //,
+        //services: ["0000fff1-0000-1000-8000-00805f9b34fb"] //, // the characteristic
+        //services: ["0000fff0-0000-1000-8000-00805f9b34fb"] //,
+        serviceData: {SERVICE_UUID:{}}
+      }]
     }).then(function(device) {
       scanning = false;
       console.log("Found device:", device.name);
